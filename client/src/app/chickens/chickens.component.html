@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="header">
+    <h1>Here are our chickens!</h1>
+    <button mat-fab [routerLink]="['/chickens', 'add']" class="right">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+      <td
+        mat-cell
+        *matCellDef="let chicken"
+        [routerLink]="[chicken.id]"
+        class="chicken-link"
+      >
+        {{ chicken.name }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+      <td mat-cell *matCellDef="let chicken">
+        <ng-container [ngSwitch]="chicken.type">
+          <span *ngSwitchCase="1">Brahma</span>
+          <span *ngSwitchCase="2">Buff Orpington</span>
+        </ng-container>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef class="text-right">Delete</th>
+      <td mat-cell *matCellDef="let chicken" class="text-right">
+        <button
+          mat-icon-button
+          color="primary"
+          (click)="$event.preventDefault(); deleteChicken(chicken)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>

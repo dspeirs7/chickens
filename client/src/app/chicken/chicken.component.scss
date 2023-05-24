@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.form {
+  display: flex;
+  gap: 1em;
+}
+
+.text-right {
+  text-align: right;
+}

@@ -1,0 +1,20 @@
+<form class="form" [formGroup]="addChickenForm">
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="name" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description"></textarea>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Type</mat-label>
+    <mat-select formControlName="type">
+      <mat-option [value]="1">Brahma</mat-option>
+      <mat-option [value]="2">Buff Orpington</mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
+<button mat-raised-button color="primary" (click)="addChicken()">
+  Add Chicken
+</button>

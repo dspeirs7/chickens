@@ -1,0 +1,35 @@
+version: '3.4'
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    image: client:latest
+    ports:
+      - '9090:80'
+    depends_on:
+      - backend
+  backend:
+    build:
+      context: .
+      dockerfile: Chickens.Api/Dockerfile
+    image: chickens.api:latest
+    env_file:
+      - .dotnet.env
+    ports:
+      - '8080:80'
+    depends_on:
+      - chicken-db
+  chicken-db:
+    image: mongo
+    container_name: chicken-db
+    restart: always
+    env_file:
+      - .mongo.env
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

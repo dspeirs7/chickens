@@ -1,0 +1,11 @@
+<mat-toolbar color="primary">
+  <div routerLink="/chickens" class="brand">
+    <button mat-icon-button *ngIf="(url$ | async) !== '/chickens'">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span>Chickens</span>
+  </div>
+</mat-toolbar>
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
