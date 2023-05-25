@@ -1,6 +1,7 @@
 using Chickens.Api.Models;
 using Chickens.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Chickens.Api.Controllers;
 
@@ -9,9 +10,13 @@ namespace Chickens.Api.Controllers;
 public class ChickensController : ControllerBase
 {
     private readonly ChickensService _chickensService;
+    private readonly ILogger _logger;
 
-    public ChickensController(ChickensService chickensService) =>
+    public ChickensController(ChickensService chickensService, ILogger<ChickensController> logger)
+    {
         _chickensService = chickensService;
+        _logger = logger;
+    }
 
     [HttpGet]
     public async Task<List<Chicken>> Get() =>
@@ -36,6 +41,28 @@ public class ChickensController : ControllerBase
         await _chickensService.CreateAsync(newChicken);
 
         return CreatedAtAction(nameof(Get), new { id = newChicken.Id }, newChicken);
+    }
+
+    [HttpPost("image/{id:length(24)}")]
+    public async Task<IActionResult> Post(string id, [FromForm] IFormFile image)
+    {
+        var chicken = await _chickensService.GetAsync(id);
+
+        if (chicken is null)
+        {
+            return NotFound();
+        }
+
+        if (!string.IsNullOrEmpty(chicken.ImageUrl))
+        {
+            await _chickensService.RemoveImageAsync(chicken.ImageUrl);
+        }
+
+        chicken.ImageUrl = await _chickensService.SaveImageAsync(id, image);
+
+        await _chickensService.UpdateAsync(id, chicken);
+
+        return Ok(new { ImageUrl = chicken.ImageUrl });
     }
 
     [HttpPut("{id:length(24)}")]
@@ -63,6 +90,11 @@ public class ChickensController : ControllerBase
         if (chicken is null)
         {
             return NotFound();
+        }
+
+        if (!string.IsNullOrEmpty(chicken.ImageUrl))
+        {
+            await _chickensService.RemoveImageAsync(chicken.ImageUrl);
         }
 
         await _chickensService.RemoveAsync(id);

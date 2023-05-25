@@ -1,3 +1,5 @@
 export const environment = {
-  apiUrl: 'http://localhost:8080/api/chickens',
+  production: false,
+  baseUrl: 'http://localhost:5291/',
+  apiUrl: 'http://localhost:5291/api/chickens',
 };

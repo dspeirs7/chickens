@@ -2,6 +2,7 @@ export interface Chicken {
   id: string;
   name: string;
   description: string;
+  imageUrl: string;
   type: number;
   vaccinations: Vaccination[];
 }

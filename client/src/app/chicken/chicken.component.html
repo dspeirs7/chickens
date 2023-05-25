@@ -1,13 +1,20 @@
-<div *ngIf="chicken$ | async as chicken" class="container">
-  <h1>{{ chicken.name }}</h1>
-  <div>
-    {{ chicken.name }}:
-    <ng-container [ngSwitch]="chicken.type">
-      <span *ngSwitchCase="1">Brahma</span>
-      <span *ngSwitchCase="2">Buff Orpington</span>
-    </ng-container>
+<div *ngIf="chicken() as chicken" class="container">
+  <app-chicken-card [chicken]="chicken" />
+  <div *ngIf="!chicken.imageUrl">
+    <button mat-raised-button (click)="imageUpload.click()">Add Photo</button>
+    <input
+      type="file"
+      accept="image/*"
+      class="file-input"
+      #imageUpload
+      (change)="onFileSelected(chicken.id, $event)"
+    />
+    <mat-progress-bar
+      mode="determinate"
+      [value]="uploadProgress"
+      *ngIf="uploadProgress"
+    />
   </div>
-  <div>Description: {{ chicken.description }}</div>
   <h2>Vaccinations</h2>
   <table
     mat-table

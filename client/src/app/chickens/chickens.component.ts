@@ -1,25 +1,15 @@
-import { Component, Inject } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Observable } from 'rxjs';
-import { Chicken } from '../chicken';
+import { filter, switchMap } from 'rxjs';
 import { HttpClientModule } from '@angular/common/http';
-import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSortModule } from '@angular/material/sort';
-import {
-  MatDialogModule,
-  MatDialog,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
-import { RouterModule } from '@angular/router';
-import { DataSource } from '@angular/cdk/collections';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { Router, RouterModule } from '@angular/router';
 import { ChickenService } from '../chicken.service';
-
-interface DialogData {
-  id: string;
-  name: string;
-}
+import { AddChickenDialogComponent } from '../add-chicken-dialog/add-chicken-dialog.component';
+import { Chicken } from '../chicken';
+import { ChickenCardComponent } from '../chicken-card/chicken-card.component';
 
 @Component({
   selector: 'app-chickens',
@@ -28,75 +18,46 @@ interface DialogData {
     CommonModule,
     HttpClientModule,
     RouterModule,
-    MatTableModule,
     MatButtonModule,
     MatIconModule,
-    MatSortModule,
     MatDialogModule,
+    ChickenCardComponent,
   ],
   templateUrl: './chickens.component.html',
   styleUrls: ['./chickens.component.scss'],
 })
 export class ChickensComponent {
-  displayedColumns: string[] = ['name', 'type', 'delete'];
-  dataSource: ChickenDatasSource;
+  chickens = signal<Chicken[]>([]);
 
   constructor(
     private chickenService: ChickenService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    this.dataSource = new ChickenDatasSource(this.chickenService);
+    this.chickenService
+      .getChickens()
+      .subscribe((chickens) => this.chickens.set(chickens));
   }
 
-  deleteChicken(chicken: Chicken) {
-    const dialogRef = this.matDialog.open(DeleteChickenDialog, {
-      data: {
-        name: chicken.name,
-        id: chicken.id,
-      },
-    });
+  addChicken() {
+    const dialogRef = this.matDialog.open(AddChickenDialogComponent);
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.chickenService.deleteChicken(chicken.id).subscribe(() => {
-          this.dataSource = new ChickenDatasSource(this.chickenService);
-        });
-      }
-    });
-  }
-}
-
-class ChickenDatasSource extends DataSource<Chicken> {
-  constructor(private chickenService: ChickenService) {
-    super();
+    dialogRef
+      .afterClosed()
+      .pipe(
+        filter((chicken) => chicken),
+        switchMap((chicken) => this.chickenService.addChicken(chicken))
+      )
+      .subscribe((chicken) => {
+        this.router.navigate(['/', 'chickens', chicken.id]);
+      });
   }
 
-  override connect(): Observable<readonly Chicken[]> {
-    return this.chickenService.getChickens();
+  onDelete(id: string) {
+    this.chickens.set([
+      ...this.chickens().filter((chicken) => chicken.id != id),
+    ]);
   }
-
-  override disconnect(): void {}
-}
-
-@Component({
-  selector: 'app-delete-chicken-dialog',
-  standalone: true,
-  template: `
-    <h2 mat-dialog-title>Confirm Delete</h2>
-    <mat-dialog-content>
-      Are you sure you want to delete {{ data.name }}?
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancel</button>
-      <button mat-button [mat-dialog-close]="true" cdkFocusInitial>
-        Delete
-      </button>
-    </mat-dialog-actions>
-  `,
-  imports: [MatDialogModule, MatButtonModule],
-})
-export class DeleteChickenDialog {
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}
 }

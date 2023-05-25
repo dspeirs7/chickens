@@ -1,7 +1,10 @@
+using Microsoft.Extensions.FileProviders;
 using Chickens.Api.Models;
 using Chickens.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 // Add services to the container.
 builder.Services.Configure<ChickensDatabaseSettings>(builder.Configuration.GetSection("ChickensDatabase"));
@@ -30,6 +33,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "images")),
+    RequestPath = "/images"
+});
 
 app.UseAuthorization();
 

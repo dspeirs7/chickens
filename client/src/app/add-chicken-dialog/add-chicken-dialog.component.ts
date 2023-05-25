@@ -1,18 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
-import { ChickenService } from '../chicken.service';
+import { MatDialogModule } from '@angular/material/dialog';
 
 interface AddChickenForm {
   name: FormControl<string>;
@@ -21,23 +18,21 @@ interface AddChickenForm {
 }
 
 @Component({
-  selector: 'app-add-chicken',
+  selector: 'app-add-chicken-dialog',
   standalone: true,
   imports: [
     CommonModule,
-    HttpClientModule,
+    MatDialogModule,
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
     ReactiveFormsModule,
   ],
-  templateUrl: './add-chicken.component.html',
-  styleUrls: ['./add-chicken.component.scss'],
+  templateUrl: './add-chicken-dialog.component.html',
+  styleUrls: ['./add-chicken-dialog.component.scss'],
 })
-export class AddChickenComponent implements OnInit {
+export class AddChickenDialogComponent implements OnInit {
   addChickenForm: FormGroup;
-
-  constructor(private chickenService: ChickenService, private router: Router) {}
 
   ngOnInit(): void {
     this.addChickenForm = new FormGroup<AddChickenForm>({
@@ -47,12 +42,6 @@ export class AddChickenComponent implements OnInit {
         nonNullable: true,
         validators: Validators.min(1),
       }),
-    });
-  }
-
-  addChicken() {
-    this.chickenService.addChicken(this.addChickenForm.value).subscribe(() => {
-      this.router.navigate(['/chickens']);
     });
   }
 }

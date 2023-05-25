@@ -18,6 +18,8 @@ services:
       - .dotnet.env
     ports:
       - '8080:80'
+    volumes:
+      - api_data:/app/images
     depends_on:
       - chicken-db
   chicken-db:
@@ -33,3 +35,4 @@ services:
 
 volumes:
   mongo_data:
+  api_data:

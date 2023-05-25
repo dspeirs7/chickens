@@ -11,7 +11,7 @@ public class Chicken
 
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
-
+    public string? ImageUrl { get; set; } = null;
     public ChickenType Type { get; set; } = ChickenType.Brahma;
     public Vaccinations[] Vaccinations { get; set; } = Array.Empty<Vaccinations>();
 }

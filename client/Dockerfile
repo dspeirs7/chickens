@@ -2,7 +2,7 @@ FROM node:latest AS build
 WORKDIR /app
 
 COPY client/. .
-RUN npm ci && npm run build --omit="dev"
+RUN npm ci && npm run build
 
 FROM nginx:alpine
 COPY client/nginx.conf /etc/nginx/conf.d/default.conf

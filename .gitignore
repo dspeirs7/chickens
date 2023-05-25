@@ -41,6 +41,7 @@ client//coverage
 client//libpeerconnection.log
 client/testem.log
 client//typings
+Chickens.Api/images
 
 # System files
 .DS_Store
