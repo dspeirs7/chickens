@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { Chicken, Vaccination } from './chicken';
+import { Chicken } from './chicken';
 import { Observable } from 'rxjs';
 
 @Injectable({

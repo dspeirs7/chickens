@@ -3,7 +3,6 @@ import {
   DestroyRef,
   OnInit,
   ViewChild,
-  WritableSignal,
   inject,
   signal,
 } from '@angular/core';
@@ -25,12 +24,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { single, switchMap } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { Chicken, Vaccination } from '../chicken';
 import { ChickenService } from '../chicken.service';
-import { EnvironmentPipe } from '../environment.pipe';
 import { ChickenCardComponent } from '../chicken-card/chicken-card.component';
 
 interface VaccinationForm {
